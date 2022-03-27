@@ -6,6 +6,7 @@ class Order:
         self.price = price
 
     def __str__(self):
+        """Display the order"""
         if(self.buy):
             return(f'\tBUY {self.qty}@{self.price} id={self.order_id}')
         else:
@@ -19,9 +20,11 @@ class Book:
         self.next_order_id = 1
     
     def __str__(self):
+        """Display the current state of the book"""
         return('\n'.join(self.executions) + f"\nBook on {self.name}\n" + '\n'.join(list(map(str, self.orders))) + "\n------------------------")
     
     def sort_orders(self):
+        """Sorts the orders by side and by price : SELL orders are sorted in ascending prices and BUY orders in descending prices"""
         sell_orders = []
         buy_orders = []
         for order in self.orders:
@@ -34,6 +37,7 @@ class Book:
         self.orders = sell_orders + buy_orders
 
     def insert_buy(self, qty, price):
+        """Inserts a new BUY order in the book"""
         buy_order = Order(order_id = self.next_order_id, qty = qty, price = price)
         self.orders.append(buy_order)
         self.next_order_id += 1
@@ -43,6 +47,7 @@ class Book:
         print(self)
 
     def insert_sell(self, qty, price):
+        """Inserts a new SELL order in the book""" 
         sell_order = Order(order_id = self.next_order_id, qty = qty, price = price, buy = False)
         self.orders.append(sell_order)
         self.next_order_id += 1
@@ -52,6 +57,7 @@ class Book:
         print(self)
 
     def execute_order(self, new_order):
+        """Check if the added order can be executed"""
         for order in self.orders:
             if(new_order.buy != order.buy and new_order.price == order.price):
                 if(new_order.qty < order.qty):
