@@ -1,3 +1,15 @@
+class Order:
+    def __init__(self, order_id, qty, price, buy = True):
+        self.order_id = order_id
+        self.buy = buy
+        self.qty = qty
+        self.price = price
+
+    def __str__(self):
+        if(self.buy):
+            return(f'\tBUY {self.qty}@{self.price} id={self.order_id}')
+        else:
+            return(f'\tSELL {self.qty}@{self.price} id={self.order_id}')
 
 class Book:
     def __init__(self, name):
@@ -27,10 +39,3 @@ class Book:
             if (order.qty > 0):
                 print(f'\t{order.side} {order.qty}@{order.price} id={order.order_id}')
         print("-----------------------")
-
-class Order:
-    def __init__(self, order_id, side, qty, price):
-        self.order_id = order_id
-        self.side = side
-        self.qty = qty
-        self.price = price
