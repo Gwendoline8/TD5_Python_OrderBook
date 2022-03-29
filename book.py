@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Order:
     def __init__(self, order_id, qty, price, buy = True):
         self.order_id = order_id
@@ -44,7 +46,8 @@ class Book:
         self.sort_orders()
         print(f'--- Insert BUY {buy_order.qty}@{buy_order.price} id={buy_order.order_id} on {self.name}')
         self.execute_order(buy_order)
-        print(self)
+        #print(self)
+        self.pandas_visualization()
 
     def insert_sell(self, qty, price):
         """Inserts a new SELL order in the book""" 
@@ -54,7 +57,8 @@ class Book:
         self.sort_orders()
         print(f'--- Insert SELL {sell_order.qty}@{sell_order.price} id={sell_order.order_id} on {self.name}')
         self.execute_order(sell_order)
-        print(self)
+        #print(self)
+        self.pandas_visualization()
 
     def execute_order(self, new_order):
         """Check if the added order can be executed"""
@@ -74,3 +78,21 @@ class Book:
                     self.orders = [x for x in self.orders if x.order_id != new_order.order_id and x.order_id != order.order_id]
                     self.executions.append(f"Execute {order.qty} at {order.price} on {self.name}")
                     break # The new order can't be executed again
+
+    def pandas_visualization(self):
+        """Create a pandas dataframe to visualize the orders"""
+        buy_side = []
+        sell_side = []
+        for order in self.orders:
+            if order.buy:
+                buy_side.append([order.order_id, order.qty, order.price])  
+            else:
+                sell_side.append([order.order_id, order.qty, order.price])  
+        df_buy = pd.DataFrame(buy_side, columns = ['ID','Quantity','Price'])
+        df_sell = pd.DataFrame(sell_side, columns = ['ID','Quantity','Price'])
+        df = pd.concat([d.reset_index(drop=True) for d in [df_buy, df_sell]], axis=1)
+        header = pd.MultiIndex.from_product([["BUY orders", "SELL orders"], ["ID", "Quantity", "Price"]])
+        df.columns = header
+        print('\n'.join(self.executions))
+        print(df)
+        print("------------------------------------------------------\n")
